@@ -1,0 +1,237 @@
+--- a/chrome/browser/ui/layout_constants.cc
++++ b/chrome/browser/ui/layout_constants.cc
+@@ -51,7 +51,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+       // TODO(tapted): This should match BubbleBorder::GetBorderRadius() once
+       // MD is default for secondary UI everywhere. That is, the constant should
+       // move to views/layout_provider.h so that all bubbles are consistent.
+-      return 8;
++      return 4;
+     case LOCATION_BAR_BUBBLE_ANCHOR_VERTICAL_INSET:
+       return 1;
+     case LOCATION_BAR_CHILD_INTERIOR_PADDING:
+@@ -69,7 +69,7 @@ int GetLayoutConstant(LayoutConstant constant) {
+     case TAB_ALERT_INDICATOR_ICON_WIDTH:
+       return touch_ui ? 12 : 16;
+     case TAB_HEIGHT:
+-      return (touch_ui ? 41 : 34) + GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP);
++      return (touch_ui ? 41 : 32) + GetLayoutConstant(TABSTRIP_TOOLBAR_OVERLAP);
+     case TAB_PRE_TITLE_PADDING:
+       return 8;
+     case TAB_STACK_DISTANCE:
+--- a/chrome/browser/ui/tabs/tab_style.cc
++++ b/chrome/browser/ui/tabs/tab_style.cc
+@@ -15,7 +15,7 @@ constexpr int kSeparatorThickness = 1;
+ 
+ // Returns the height of the separator between tabs.
+ int GetSeparatorHeight() {
+-  return ui::MaterialDesignController::touch_ui() ? 24 : 20;
++  return ui::MaterialDesignController::touch_ui() ? 24 : 28;
+ }
+ 
+ }  // namespace
+@@ -66,10 +66,10 @@ gfx::Size TabStyle::GetPreviewImageSize() {
+ // static
+ int TabStyle::GetCornerRadius() {
+   return views::LayoutProvider::Get()->GetCornerRadiusMetric(
+-      views::EMPHASIS_HIGH);
++      views::EMPHASIS_LOW);
+ }
+ 
+ // static
+ int TabStyle::GetContentsHorizontalInsetSize() {
+-  return GetCornerRadius() * 2;
++  return GetCornerRadius() * 4;
+ }
+--- a/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
++++ b/chrome/browser/ui/views/bookmarks/bookmark_bar_view.cc
+@@ -149,7 +149,7 @@ gfx::ImageSkia* GetImageSkiaNamed(int id) {
+ void SetBookmarkHighlightPath(views::View* host_view) {
+   auto path = std::make_unique<SkPath>();
+   const int radius = ChromeLayoutProvider::Get()->GetCornerRadiusMetric(
+-      views::EMPHASIS_MAXIMUM, host_view->size());
++      views::EMPHASIS_LOW, host_view->size());
+   path->addRoundRect(gfx::RectToSkRect(gfx::Rect(host_view->size())), radius,
+                      radius);
+   host_view->SetProperty(views::kHighlightPathKey, path.release());
+--- a/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
++++ b/chrome/browser/ui/views/frame/browser_non_client_frame_view_mac.mm
+@@ -121,7 +121,7 @@ gfx::Rect BrowserNonClientFrameViewMac::GetBoundsForTabStripRegion(
+   // calling through private APIs.
+   DCHECK(tabstrip);
+ 
+-  constexpr int kTabstripLeftInset = 70;  // Make room for caption buttons.
++  constexpr int kTabstripLeftInset = 74;  // Make room for caption buttons.
+   // Do not draw caption buttons on fullscreen.
+   const int x = frame()->IsFullscreen() ? 0 : kTabstripLeftInset;
+   const bool restored = !frame()->IsMaximized() && !frame()->IsFullscreen();
+@@ -143,7 +143,7 @@ int BrowserNonClientFrameViewMac::GetTopInset(bool restored) const {
+ 
+   // Mac seems to reserve 1 DIP of the top inset as a resize handle.
+   constexpr int kResizeHandleHeight = 1;
+-  constexpr int kTabstripTopInset = 8;
++  constexpr int kTabstripTopInset = 0;
+   int top_inset = kTabstripTopInset;
+   if (EverHasVisibleBackgroundTabShapes()) {
+     top_inset =
+--- a/chrome/browser/ui/views/location_bar/location_bar_view.cc
++++ b/chrome/browser/ui/views/location_bar/location_bar_view.cc
+@@ -297,7 +297,7 @@ SkColor LocationBarView::GetOpaqueBorderColor(bool incognito) const {
+ 
+ int LocationBarView::GetBorderRadius() const {
+   return ChromeLayoutProvider::Get()->GetCornerRadiusMetric(
+-      views::EMPHASIS_MAXIMUM, size());
++      views::EMPHASIS_LOW, size());
+ }
+ 
+ std::unique_ptr<views::Background> LocationBarView::CreateRoundRectBackground(
+--- a/chrome/browser/ui/views/omnibox/omnibox_match_cell_view.cc
++++ b/chrome/browser/ui/views/omnibox/omnibox_match_cell_view.cc
+@@ -52,7 +52,7 @@ static constexpr int kEntityImageSize = 32;
+ static constexpr int kEntityImageCornerRadius = 4;
+ 
+ // The margin height of a one-line suggestion row.
+-static constexpr int kOneLineRowMarginHeight = 8;
++static constexpr int kOneLineRowMarginHeight = 4;
+ 
+ // The margin height of a two-line suggestion row.
+ static constexpr int kTwoLineRowMarginHeight = 4;
+--- a/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
++++ b/chrome/browser/ui/views/omnibox/rounded_omnibox_results_frame.cc
+@@ -197,7 +197,7 @@ int RoundedOmniboxResultsFrame::GetNonResultSectionHeight() {
+ // static
+ gfx::Insets RoundedOmniboxResultsFrame::GetLocationBarAlignmentInsets() {
+   return ui::MaterialDesignController::touch_ui() ? gfx::Insets(6, 1, 5, 1)
+-                                                  : gfx::Insets(4, 6);
++                                                  : gfx::Insets(0, 0);
+ }
+ 
+ // static
+--- a/chrome/browser/ui/views/tabs/glow_hover_controller.cc
++++ b/chrome/browser/ui/views/tabs/glow_hover_controller.cc
+@@ -13,7 +13,7 @@ static const double kSubtleOpacityScale = 0.45;
+ static const double kPronouncedOpacityScale = 1.0;
+ 
+ // How long the hover state takes.
+-static const int kTrackHoverDurationMs = 200;
++static const int kTrackHoverDurationMs = 0;
+ 
+ GlowHoverController::GlowHoverController(views::View* view)
+     : view_(view),
+@@ -32,8 +32,8 @@ void GlowHoverController::SetAnimationContainer(
+ 
+ void GlowHoverController::SetLocation(const gfx::Point& location) {
+   location_ = location;
+-  if (ShouldDraw())
+-    view_->SchedulePaint();
++  // if (ShouldDraw())
++  //   view_->SchedulePaint();
+ }
+ 
+ void GlowHoverController::SetSubtleOpacityScale(double opacity_scale) {
+--- a/chrome/browser/ui/views/tabs/new_tab_button.cc
++++ b/chrome/browser/ui/views/tabs/new_tab_button.cc
+@@ -69,8 +69,8 @@ NewTabButton::NewTabButton(TabStrip* tab_strip, views::ButtonListener* listener)
+                               ui::EF_MIDDLE_MOUSE_BUTTON);
+ 
+   SetInkDropMode(InkDropMode::ON);
+-  set_ink_drop_visible_opacity(0.08f);
+-  set_ink_drop_highlight_opacity(0.1f);
++  set_ink_drop_visible_opacity(0.2f);
++  set_ink_drop_highlight_opacity(0.2f);
+ 
+   SetInstallFocusRingOnFocus(true);
+ }
+@@ -286,8 +286,13 @@ SkPath NewTabButton::GetBorderPath(const gfx::Point& origin,
+                 SkPath::kCW_Direction, -diameter, 0);
+     path.close();
+   } else {
+-    path.addCircle(scaled_origin.x() + radius, scaled_origin.y() + radius,
+-                   radius);
++    // path.addRect(RectToSkRect(GetContentsBounds()));
++    path.moveTo(scaled_origin.x(), 3);
++    const float diameter = radius * 2;
++    path.rLineTo(diameter, 0);
++    path.rLineTo(0, scaled_origin.y() + (diameter - 1));
++    path.rLineTo(-diameter, 0);
++    path.close();
+   }
+   return path;
+ }
+--- a/chrome/browser/ui/views/tabs/tab_close_button.cc
++++ b/chrome/browser/ui/views/tabs/tab_close_button.cc
+@@ -167,9 +167,8 @@ bool TabCloseButton::GetHitTestMask(SkPath* mask) const {
+ 
+ void TabCloseButton::DrawHighlight(gfx::Canvas* canvas, ButtonState state) {
+   SkPath path;
+-  gfx::Point center = GetContentsBounds().CenterPoint();
+   path.setFillType(SkPath::kEvenOdd_FillType);
+-  path.addCircle(center.x(), center.y(), GetWidth() / 2);
++  path.addRect(RectToSkRect(GetContentsBounds()));
+   cc::PaintFlags flags;
+   flags.setAntiAlias(true);
+   flags.setColor(highlight_colors_[state]);
+--- a/chrome/browser/ui/views/tabs/tab_style_views.cc
++++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
+@@ -575,8 +575,9 @@ TabStyle::SeparatorOpacities GM2TabStyle::GetSeparatorOpacities(
+   const float target_opacity =
+       float{std::min(std::abs(tab_->x() - target_bounds.x()), tab_width)} /
+       tab_width;
+-  if (tab_->controller()->IsFirstVisibleTab(tab_))
+-    leading_opacity = target_opacity;
++  if (tab_->controller()->IsFirstVisibleTab(tab_) &&
++      !tab_->controller()->IsActiveTab(tab_))
++    leading_opacity = 1.f;
+   if (tab_->controller()->IsLastVisibleTab(tab_) &&
+       tab_->controller()->HasVisibleBackgroundTabShapes())
+     trailing_opacity = target_opacity;
+--- a/chrome/browser/ui/views/toolbar/app_menu.cc
++++ b/chrome/browser/ui/views/toolbar/app_menu.cc
+@@ -89,7 +89,7 @@ using views::View;
+ namespace {
+ 
+ // Horizontal padding on the edges of the in-menu buttons.
+-const int kHorizontalPadding = 15;
++const int kHorizontalPadding = 10;
+ 
+ #if defined(OS_CHROMEOS)
+ // Extra horizontal space to reserve for the fullscreen button.
+--- a/chrome/browser/ui/views/toolbar/toolbar_ink_drop_util.cc
++++ b/chrome/browser/ui/views/toolbar/toolbar_ink_drop_util.cc
+@@ -45,7 +45,7 @@ void SetToolbarButtonHighlightPath(views::View* host_view,
+   rect.Inset(GetToolbarInkDropInsets(host_view, margin_insets));
+ 
+   const int radii = ChromeLayoutProvider::Get()->GetCornerRadiusMetric(
+-      views::EMPHASIS_MAXIMUM, rect.size());
++      views::EMPHASIS_LOW, rect.size());
+ 
+   auto path = std::make_unique<SkPath>();
+   path->addRoundRect(gfx::RectToSkRect(rect), radii, radii);
+@@ -54,7 +54,7 @@ void SetToolbarButtonHighlightPath(views::View* host_view,
+ 
+ std::unique_ptr<views::InkDropHighlight> CreateToolbarInkDropHighlight(
+     const views::InkDropHostView* host_view) {
+-  constexpr float kToolbarInkDropHighlightVisibleOpacity = 0.08f;
++  constexpr float kToolbarInkDropHighlightVisibleOpacity = 0.2f;
+   auto highlight = host_view->views::InkDropHostView::CreateInkDropHighlight();
+   highlight->set_visible_opacity(kToolbarInkDropHighlightVisibleOpacity);
+   return highlight;
+--- a/ui/views/controls/menu/menu_config_mac.mm
++++ b/ui/views/controls/menu/menu_config_mac.mm
+@@ -17,7 +17,7 @@ void InitMaterialMenuConfig(views::MenuConfig* config) {
+   config->submenu_horizontal_inset = 0;
+   config->minimum_text_item_height = 28;
+   config->minimum_container_item_height = 40;
+-  config->minimum_menu_width = 320;
++  config->minimum_menu_width = 300;
+   config->label_to_arrow_padding = 0;
+   config->arrow_to_edge_padding = 16;
+   config->check_width = 16;
+@@ -31,7 +31,7 @@ void InitMaterialMenuConfig(views::MenuConfig* config) {
+   config->align_arrow_and_shortcut = true;
+   config->use_outer_border = false;
+   config->icons_in_label = true;
+-  config->corner_radius = 8;
++  config->corner_radius = 6;
+   config->auxiliary_corner_radius = 4;
+ }
+ 
