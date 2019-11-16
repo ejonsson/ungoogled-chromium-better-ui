@@ -3,7 +3,19 @@
 Removes sliding and fading animations, empty space above tabs and overly rounded corner material design. Adds slightly thinner tabs and attempts to bring dark mode colours more in line with native macOS applications.
 
 
-### Instructions
+### Instructions - Arch Linux
+ 
+ ```
+ git clone --recurse-submodules https://github.com/ejonsson/ungoogled-chromium-better-ui.git
+ cd ungoogled-chromium-better-ui
+ ./patch.sh
+ cd ungoogled-chromium-archlinux
+ sudo pacman -S ninja clang lld gn llvm quilt
+ makepkg
+ ```
+
+
+### Instructions - macOS
 
 ```
 git clone --recurse-submodules https://github.com/ejonsson/ungoogled-chromium-better-ui.git

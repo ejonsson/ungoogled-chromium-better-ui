@@ -1,0 +1,98 @@
+--- a/ui/gfx/animation/animation.cc
++++ b/ui/gfx/animation/animation.cc
+@@ -97,6 +97,7 @@ void Animation::SetContainer(AnimationContainer* container) {
+ }
+ 
+ bool Animation::ShouldRenderRichAnimation() {
++  return false;
+   if (rich_animation_rendering_mode_ == RichAnimationRenderMode::PLATFORM)
+     return ShouldRenderRichAnimationImpl();
+   return rich_animation_rendering_mode_ ==
+@@ -107,7 +108,7 @@ bool Animation::ShouldRenderRichAnimation() {
+ // static
+ bool Animation::ShouldRenderRichAnimationImpl() {
+   // Defined in platform specific file for Windows and OSX.
+-  return true;
++  return false;
+ }
+ 
+ // static
+--- a/ui/gfx/animation/animation_mac.mm
++++ b/ui/gfx/animation/animation_mac.mm
+@@ -23,6 +23,7 @@ bool Animation::ShouldRenderRichAnimationImpl() {
+ 
+ // static
+ bool Animation::ScrollAnimationsEnabledBySystem() {
++  return false;
+   // Because of sandboxing, OS settings should only be queried from the browser
+   // process.
+   DCHECK(base::MessageLoopCurrentForUI::IsSet() ||
+--- a/ui/gfx/animation/linear_animation.cc
++++ b/ui/gfx/animation/linear_animation.cc
+@@ -64,6 +64,7 @@ void LinearAnimation::End() {
+ }
+ 
+ void LinearAnimation::SetDuration(base::TimeDelta duration) {
++  return;
+   duration_ = duration * g_duration_scale_factor;
+   if (duration_ < timer_interval())
+     duration_ = timer_interval();
+--- a/ui/gfx/animation/multi_animation.cc
++++ b/ui/gfx/animation/multi_animation.cc
+@@ -10,7 +10,7 @@
+ namespace gfx {
+ 
+ // Default interval, in ms.
+-static const int kDefaultTimerInterval = 20;
++static const int kDefaultTimerInterval = 0;
+ 
+ static int TotalTime(const MultiAnimation::Parts& parts) {
+   int time_ms = 0;
+--- a/ui/gfx/animation/slide_animation.cc
++++ b/ui/gfx/animation/slide_animation.cc
+@@ -11,7 +11,7 @@
+ namespace gfx {
+ 
+ // How long animations should take by default.
+-static const int kDefaultDurationMs = 120;
++static const int kDefaultDurationMs = 0;
+ 
+ SlideAnimation::SlideAnimation(AnimationDelegate* target)
+     : LinearAnimation(target),
+--- a/ui/views/animation/ink_drop_impl.cc
++++ b/ui/views/animation/ink_drop_impl.cc
+@@ -19,8 +19,8 @@ namespace {
+ 
+ // The duration, in milliseconds for the highlight state fade in/out animations
+ // when it is triggered by a hover changed event.
+-constexpr int kHighlightFadeInOnHoverChangeDurationMs = 250;
+-constexpr int kHighlightFadeOutOnHoverChangeDurationMs = 250;
++constexpr int kHighlightFadeInOnHoverChangeDurationMs = 0;
++constexpr int kHighlightFadeOutOnHoverChangeDurationMs = 0;
+ 
+ // The duration, in milliseconds for the highlight state fade in/out animations
+ // when it is triggered by a focus changed event.
+@@ -30,18 +30,18 @@ constexpr int kHighlightFadeOutOnFocusChangeDurationMs = 0;
+ // The duration, in milliseconds, for showing/hiding the highlight when
+ // triggered by ripple visibility changes for the HIDE_ON_RIPPLE
+ // AutoHighlightMode.
+-constexpr int kHighlightFadeInOnRippleHidingDurationMs = 250;
+-constexpr int kHighlightFadeOutOnRippleShowingDurationMs = 120;
++constexpr int kHighlightFadeInOnRippleHidingDurationMs = 0;
++constexpr int kHighlightFadeOutOnRippleShowingDurationMs = 0;
+ 
+ // The duration, in milliseconds, for showing/hiding the highlight when
+ // triggered by ripple visibility changes for the SHOW_ON_RIPPLE
+ // AutoHighlightMode.
+-constexpr int kHighlightFadeInOnRippleShowingDurationMs = 250;
+-constexpr int kHighlightFadeOutOnRippleHidingDurationMs = 120;
++constexpr int kHighlightFadeInOnRippleShowingDurationMs = 0;
++constexpr int kHighlightFadeOutOnRippleHidingDurationMs = 0;
+ 
+ // The amount of time in milliseconds that |highlight_| should delay after a
+ // ripple animation before fading in, for highlight due to mouse hover.
+-constexpr int kHoverFadeInAfterRippleDelayMs = 1000;
++constexpr int kHoverFadeInAfterRippleDelayMs = 200;
+ 
+ // Returns true if an ink drop with the given |ink_drop_state| should
+ // automatically transition to the InkDropState::HIDDEN state.
