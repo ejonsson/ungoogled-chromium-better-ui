@@ -1,6 +1,6 @@
 --- a/ungoogled-chromium-archlinux/PKGBUILD
 +++ b/ungoogled-chromium-archlinux/PKGBUILD
-@@ -76,6 +76,13 @@
+@@ -76,6 +76,14 @@
    _ungoogled_archlinux_repo="$srcdir/$pkgname-archlinux"
    _ungoogled_repo="$srcdir/$pkgname"
    _utils="${_ungoogled_repo}/utils"
@@ -10,6 +10,7 @@
 +better-ui/disable_animations.patch
 +better-ui/better_ui.patch
 +better-ui/mac_dark_mode.patch
++better-ui/buildfix.patch
 +EOT
  
    cd "$srcdir/chromium-${_chromium_version}"

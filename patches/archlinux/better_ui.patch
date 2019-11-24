@@ -130,24 +130,23 @@
  void GlowHoverController::SetSubtleOpacityScale(double opacity_scale) {
 --- a/chrome/browser/ui/views/tabs/new_tab_button.cc
 +++ b/chrome/browser/ui/views/tabs/new_tab_button.cc
-@@ -69,8 +69,8 @@ NewTabButton::NewTabButton(TabStrip* tab_strip, views::ButtonListener* listener)
-                               ui::EF_MIDDLE_MOUSE_BUTTON);
+@@ -78,8 +78,8 @@
+       AddChildView(std::make_unique<views::InkDropContainerView>());
  
    SetInkDropMode(InkDropMode::ON);
--  set_ink_drop_visible_opacity(0.08f);
--  set_ink_drop_highlight_opacity(0.1f);
-+  set_ink_drop_visible_opacity(0.2f);
+-  set_ink_drop_highlight_opacity(0.16f);
+-  set_ink_drop_visible_opacity(0.14f);
 +  set_ink_drop_highlight_opacity(0.2f);
++  set_ink_drop_visible_opacity(0.2f);
  
    SetInstallFocusRingOnFocus(true);
  }
-@@ -286,8 +286,13 @@ SkPath NewTabButton::GetBorderPath(const gfx::Point& origin,
+@@ -317,8 +317,12 @@
                  SkPath::kCW_Direction, -diameter, 0);
      path.close();
    } else {
 -    path.addCircle(scaled_origin.x() + radius, scaled_origin.y() + radius,
 -                   radius);
-+    // path.addRect(RectToSkRect(GetContentsBounds()));
 +    path.moveTo(scaled_origin.x(), 3);
 +    const float diameter = radius * 2;
 +    path.rLineTo(diameter, 0);
@@ -159,17 +158,37 @@
  }
 --- a/chrome/browser/ui/views/tabs/tab_close_button.cc
 +++ b/chrome/browser/ui/views/tabs/tab_close_button.cc
-@@ -167,9 +167,8 @@ bool TabCloseButton::GetHitTestMask(SkPath* mask) const {
- 
- void TabCloseButton::DrawHighlight(gfx::Canvas* canvas, ButtonState state) {
-   SkPath path;
+@@ -114,8 +114,7 @@
+ void TabCloseButton::Layout() {
+   ImageButton::Layout();
+   auto path = std::make_unique<SkPath>();
 -  gfx::Point center = GetContentsBounds().CenterPoint();
-   path.setFillType(SkPath::kEvenOdd_FillType);
--  path.addCircle(center.x(), center.y(), GetWidth() / 2);
-+  path.addRect(RectToSkRect(GetContentsBounds()));
+-  path->addCircle(center.x(), center.y(), GetWidth() / 2);
++  path->addRect(RectToSkRect(GetContentsBounds()));
+   SetProperty(views::kHighlightPathKey, path.release());
+ }
+ 
+@@ -123,16 +122,16 @@
+   int width = GetWidth();
+   gfx::Size size(width, width);
+   gfx::Insets insets = GetInsets();
+-  size.Enlarge(insets.width(), insets.height());
++  size.Enlarge(insets.width() * 1.2, insets.height() * 1.2);
+   return size;
+ }
+ 
+ std::unique_ptr<views::InkDropMask> TabCloseButton::CreateInkDropMask() const {
+-  return std::make_unique<views::CircleInkDropMask>(
+-      size(), GetMirroredRect(GetContentsBounds()).CenterPoint(),
+-      GetWidth() / 2);
++   return std::make_unique<views::RoundRectInkDropMask>(
++       size(), GetInsets(), 2);
+ }
+ 
++
+ void TabCloseButton::PaintButtonContents(gfx::Canvas* canvas) {
    cc::PaintFlags flags;
-   flags.setAntiAlias(true);
-   flags.setColor(highlight_colors_[state]);
+   constexpr float kStrokeWidth = 1.5f;
 --- a/chrome/browser/ui/views/tabs/tab_style_views.cc
 +++ b/chrome/browser/ui/views/tabs/tab_style_views.cc
 @@ -575,8 +575,9 @@ TabStyle::SeparatorOpacities GM2TabStyle::GetSeparatorOpacities(

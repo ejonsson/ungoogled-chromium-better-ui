@@ -1,6 +1,6 @@
 --- a/chrome/browser/themes/theme_properties.cc
 +++ b/chrome/browser/themes/theme_properties.cc
-@@ -85,7 +85,50 @@ base::Optional<SkColor> GetDarkModeColor(int id) {
+@@ -178,7 +178,44 @@
    // but this is very subject to change. Additionally, dark mode incognito may
    // end up having a different look. For now, just call into GetIncognitoColor
    // for convenience, but maintain a separate interface.
@@ -9,10 +9,11 @@
 +    case ThemeProperties::COLOR_FRAME:
 +      return gfx::macFrame;
 +    case ThemeProperties::COLOR_BACKGROUND_TAB:
-+      return gfx::macTabInBackground;
++      return gfx::macFrameInactive;
 +    case ThemeProperties::COLOR_FRAME_INACTIVE:
 +      return gfx::macFrameInactive;
 +    case ThemeProperties::COLOR_BACKGROUND_TAB_INACTIVE:
++      return gfx::macTabInactiveInBackground;
 +    case ThemeProperties::COLOR_DOWNLOAD_SHELF:
 +    case ThemeProperties::COLOR_STATUS_BUBBLE:
 +    case ThemeProperties::COLOR_INFOBAR:
@@ -20,28 +21,21 @@
 +    case ThemeProperties::COLOR_NTP_BACKGROUND:
 +      return gfx::macTabInactiveInBackground;
 +    case ThemeProperties::COLOR_HOVER_CARD_NO_PREVIEW_FOREGROUND:
-+      return gfx::kGoogleGrey700;
++      return gfx::kGoogleGrey900;
 +    case ThemeProperties::COLOR_HOVER_CARD_NO_PREVIEW_BACKGROUND:
 +      return gfx::kGoogleGrey900;
 +    case ThemeProperties::COLOR_BOOKMARK_TEXT:
 +    case ThemeProperties::COLOR_TAB_TEXT:
-+    case ThemeProperties::COLOR_TAB_CLOSE_BUTTON_ACTIVE:
-+    case ThemeProperties::COLOR_TOOLBAR_BUTTON_ICON:
 +      return gfx::kGoogleGrey100;
 +    case ThemeProperties::COLOR_NTP_TEXT:
 +      return gfx::kGoogleGrey200;
 +    case ThemeProperties::COLOR_BACKGROUND_TAB_TEXT:
 +    case ThemeProperties::COLOR_BACKGROUND_TAB_TEXT_INACTIVE:
-+    case ThemeProperties::COLOR_TAB_CLOSE_BUTTON_INACTIVE:
 +    case ThemeProperties::COLOR_TAB_ALERT_AUDIO:
 +    case ThemeProperties::COLOR_TAB_ALERT_CAPTURING:
 +    case ThemeProperties::COLOR_TAB_PIP_PLAYING:
 +    case ThemeProperties::COLOR_TAB_ALERT_RECORDING:
 +      return gfx::kGoogleGrey400;
-+    case ThemeProperties::COLOR_TAB_CLOSE_BUTTON_BACKGROUND_HOVER:
-+      return gfx::kGoogleGrey700;
-+    case ThemeProperties::COLOR_TAB_CLOSE_BUTTON_BACKGROUND_PRESSED:
-+      return gfx::kGoogleGrey600;
 +    case ThemeProperties::COLOR_TOOLBAR_CONTENT_AREA_SEPARATOR:
 +      return SkColorSetRGB(0x28, 0x28, 0x28);
 +    case ThemeProperties::COLOR_NTP_LINK:
@@ -77,20 +71,21 @@
        // and select (6%), which can overlap (for 14%). Pre-blend these with the
 --- a/chrome/browser/ui/omnibox/omnibox_theme.h
 +++ b/chrome/browser/ui/omnibox/omnibox_theme.h
-@@ -37,6 +37,7 @@ enum class OmniboxPartState {
+@@ -35,6 +35,7 @@
+   NORMAL,
    HOVERED,
    SELECTED,
-   HOVERED_AND_SELECTED,
 +  INACTIVE,
  
    // Applicable to LOCATION_BAR_SECURITY_CHIP only.
    CHIP_DEFAULT,
 --- a/ui/gfx/color_palette.h
 +++ b/ui/gfx/color_palette.h
-@@ -105,6 +105,20 @@ constexpr SkColor kChromeIconGrey = kGoogleGrey700;
+@@ -149,6 +149,21 @@
  // sometimes listed as 0.38a.
  constexpr SkAlpha kDisabledControlAlpha = 0x61;
  
++
 +// Mac dark mode colours
 +constexpr SkColor macDefaultAccent = SkColorSetRGB(0x03, 0x57, 0xD9);
 +constexpr SkColor macMenuBackground = SkColorSetRGB(0x37, 0x37, 0x37);

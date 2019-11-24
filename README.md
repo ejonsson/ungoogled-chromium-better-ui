@@ -3,17 +3,6 @@
 Removes sliding and fading animations, empty space above tabs and overly rounded corner material design. Adds slightly thinner tabs and attempts to bring dark mode colours more in line with native macOS applications.
 
 
-### Instructions - Arch Linux
- 
- ```
- git clone --recurse-submodules https://github.com/ejonsson/ungoogled-chromium-better-ui.git
- cd ungoogled-chromium-better-ui
- ./patch.sh
- cd ungoogled-chromium-archlinux
- sudo pacman -S ninja clang lld gn llvm quilt
- makepkg
- ```
-
 
 ### Instructions - macOS
 
@@ -22,13 +11,29 @@ git clone --recurse-submodules https://github.com/ejonsson/ungoogled-chromium-be
 cd ungoogled-chromium-better-ui
 ./patch.sh
 cd ungoogled-chromium-macos
-```
+
 
 Then follow Ungoogled Chromium build instructions for macOS at https://github.com/ungoogled-software/ungoogled-chromium-macos.
 These changes were tested on tag 75.0.3770.100-1.2, but might work with later versions.
+```
+
+
+
+### Instructions - Arch Linux
+ 
+```
+git clone --recurse-submodules https://github.com/ejonsson/ungoogled-chromium-better-ui.git
+cd ungoogled-chromium-better-ui
+./patch.sh
+cd ungoogled-chromium-archlinux
+sudo pacman -S ninja clang lld gn llvm quilt
+makepkg
+```
+
 
 
 ### Examples of changes. Modified UI above, original below.
+
 
 
 #### Tabs
@@ -42,6 +47,10 @@ These changes were tested on tag 75.0.3770.100-1.2, but might work with later ve
 ![](https://user-images.githubusercontent.com/482483/60313817-04e41280-9950-11e9-9132-13028d3cba21.gif)
 
 
+
 #### Menu
 ![](https://user-images.githubusercontent.com/482483/60313821-09a8c680-9950-11e9-9af4-92b651bf96ad.gif)
 ![](https://user-images.githubusercontent.com/482483/60313825-0d3c4d80-9950-11e9-8589-040ed461f48b.gif)
+
+
+
