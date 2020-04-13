@@ -27,51 +27,55 @@
    duration_ = duration * g_duration_scale_factor;
    if (duration_ < timer_interval())
      duration_ = timer_interval();
---- a/ui/gfx/animation/multi_animation.cc
-+++ b/ui/gfx/animation/multi_animation.cc
-@@ -10,7 +10,7 @@
- namespace gfx {
+--- a/ui/gfx/animation/multi_animation.h
++++ b/ui/gfx/animation/multi_animation.h
+@@ -54,7 +54,7 @@
+   using Parts = std::vector<Part>;
  
- // Default interval, in ms.
--static const int kDefaultTimerInterval = 20;
-+static const int kDefaultTimerInterval = 0;
+   static constexpr auto kDefaultTimerInterval =
+-      base::TimeDelta::FromMilliseconds(20);
++      base::TimeDelta::FromMilliseconds(0);
  
- static int TotalTime(const MultiAnimation::Parts& parts) {
-   int time_ms = 0;
+   MultiAnimation(const Parts& parts, base::TimeDelta timer_interval);
+   ~MultiAnimation() override;
 --- a/ui/views/animation/ink_drop_impl.cc
 +++ b/ui/views/animation/ink_drop_impl.cc
-@@ -19,8 +19,8 @@ namespace {
+@@ -20,9 +20,9 @@
+ // The duration for the highlight state fade in/out animations when they are
+ // triggered by a hover changed event.
+ constexpr auto kHighlightFadeInOnHoverChangeDuration =
+-    base::TimeDelta::FromMilliseconds(250);
++    base::TimeDelta::FromMilliseconds(0);
+ constexpr auto kHighlightFadeOutOnHoverChangeDuration =
+-    base::TimeDelta::FromMilliseconds(250);
++    base::TimeDelta::FromMilliseconds(0);
  
- // The duration, in milliseconds for the highlight state fade in/out animations
- // when it is triggered by a hover changed event.
--constexpr int kHighlightFadeInOnHoverChangeDurationMs = 250;
--constexpr int kHighlightFadeOutOnHoverChangeDurationMs = 250;
-+constexpr int kHighlightFadeInOnHoverChangeDurationMs = 0;
-+constexpr int kHighlightFadeOutOnHoverChangeDurationMs = 0;
+ // The duration for the highlight state fade in/out animations when they are
+ // triggered by a focus changed event.
+@@ -32,21 +32,21 @@
+ // The duration for showing/hiding the highlight when triggered by ripple
+ // visibility changes for the HIDE_ON_RIPPLE AutoHighlightMode.
+ constexpr auto kHighlightFadeInOnRippleHidingDuration =
+-    base::TimeDelta::FromMilliseconds(250);
++    base::TimeDelta::FromMilliseconds(0);
+ constexpr auto kHighlightFadeOutOnRippleShowingDuration =
+-    base::TimeDelta::FromMilliseconds(120);
++    base::TimeDelta::FromMilliseconds(0);
  
- // The duration, in milliseconds for the highlight state fade in/out animations
- // when it is triggered by a focus changed event.
-@@ -30,18 +30,18 @@ constexpr int kHighlightFadeOutOnFocusChangeDurationMs = 0;
- // The duration, in milliseconds, for showing/hiding the highlight when
- // triggered by ripple visibility changes for the HIDE_ON_RIPPLE
- // AutoHighlightMode.
--constexpr int kHighlightFadeInOnRippleHidingDurationMs = 250;
--constexpr int kHighlightFadeOutOnRippleShowingDurationMs = 120;
-+constexpr int kHighlightFadeInOnRippleHidingDurationMs = 0;
-+constexpr int kHighlightFadeOutOnRippleShowingDurationMs = 0;
+ // The duration for showing/hiding the highlight when triggered by ripple
+ // visibility changes for the SHOW_ON_RIPPLE AutoHighlightMode.
+ constexpr auto kHighlightFadeInOnRippleShowingDuration =
+-    base::TimeDelta::FromMilliseconds(250);
++    base::TimeDelta::FromMilliseconds(0);
+ constexpr auto kHighlightFadeOutOnRippleHidingDuration =
+-    base::TimeDelta::FromMilliseconds(120);
++    base::TimeDelta::FromMilliseconds(0);
  
- // The duration, in milliseconds, for showing/hiding the highlight when
- // triggered by ripple visibility changes for the SHOW_ON_RIPPLE
- // AutoHighlightMode.
--constexpr int kHighlightFadeInOnRippleShowingDurationMs = 250;
--constexpr int kHighlightFadeOutOnRippleHidingDurationMs = 120;
-+constexpr int kHighlightFadeInOnRippleShowingDurationMs = 0;
-+constexpr int kHighlightFadeOutOnRippleHidingDurationMs = 0;
- 
- // The amount of time in milliseconds that |highlight_| should delay after a
- // ripple animation before fading in, for highlight due to mouse hover.
--constexpr int kHoverFadeInAfterRippleDelayMs = 1000;
-+constexpr int kHoverFadeInAfterRippleDelayMs = 200;
+ // The amount of time that |highlight_| should delay after a ripple animation
+ // before fading in, for highlight due to mouse hover.
+ constexpr auto kHoverFadeInAfterRippleDelay =
+-    base::TimeDelta::FromMilliseconds(1000);
++    base::TimeDelta::FromMilliseconds(200);
  
  // Returns true if an ink drop with the given |ink_drop_state| should
  // automatically transition to the InkDropState::HIDDEN state.
@@ -79,11 +83,10 @@
 +++ b/ui/gfx/animation/slide_animation.h
 @@ -108,7 +108,7 @@
  
-   // How long a hover in/out animation will last for, in ms. This can be
-   // overridden with SetDuration.
--  int slide_duration_ = 120;
-+  int slide_duration_ = 0;
+   // How long a hover in/out animation will last for. This can be overridden
+   // with SetSlideDuration().
+-  base::TimeDelta slide_duration_ = base::TimeDelta::FromMilliseconds(120);
++  base::TimeDelta slide_duration_ = base::TimeDelta::FromMilliseconds(0);
  
    // Dampens the reduction in duration for animations which start partway.
    double dampening_value_ = 1.0;
-

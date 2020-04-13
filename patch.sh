@@ -13,9 +13,6 @@ echo 'Copying patches to ./ungoogled-chromium-'$OS'/'$PATCHDIR
 mkdir -p ./ungoogled-chromium-$OS/$PATCHDIR/better-ui
 cp -r ./patches/$OS/*.patch ./ungoogled-chromium-$OS/$PATCHDIR/better-ui/
 
-# Build fix for Chromium 78.0.3903.87
-cp ./patches/buildfix.patch ./ungoogled-chromium-$OS/$PATCHDIR/better-ui/
-
 
 if [ $OS == 'macos' ]
 then
@@ -26,7 +23,7 @@ then
   better-ui/mac_dark_mode.patch
 EOT
 else
-  patch -p0 ./ungoogled-chromium-$OS/PKGBUILD patches/PKGBUILD.patch
+  patch ./ungoogled-chromium-$OS/PKGBUILD < patches/PKGBUILD.patch
 fi
 
 echo 'Done. You can now follow the build instructions at https://github.com/ungoogled-software/ungoogled-chromium-'$OS

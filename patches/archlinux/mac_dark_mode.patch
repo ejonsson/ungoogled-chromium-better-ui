@@ -48,37 +48,27 @@
  }  // namespace
 --- a/chrome/browser/ui/omnibox/omnibox_theme.cc
 +++ b/chrome/browser/ui/omnibox/omnibox_theme.cc
-@@ -68,8 +68,9 @@ SkColor GetOmniboxColor(OmniboxPart part,
+@@ -21,9 +21,7 @@
+   const bool selected = state == OmniboxPartState::SELECTED;
    switch (part) {
-     case OmniboxPart::LOCATION_BAR_BACKGROUND: {
-       const bool hovered = state == OmniboxPartState::HOVERED;
--      return dark ? (hovered ? SkColorSetRGB(0x2F, 0x33, 0x36)
--                             : SkColorSetRGB(0x28, 0x2C, 0x2F))
-+      const bool inactive = state == OmniboxPartState::INACTIVE;
-+      return dark ? (inactive ? gfx::macLocationBarInactive
-+                             : gfx::macLocationBar)
-                   : (hovered ? gfx::kGoogleGrey200 : gfx::kGoogleGrey100);
-     }
-     case OmniboxPart::LOCATION_BAR_SECURITY_CHIP:
-@@ -81,7 +82,7 @@ SkColor GetOmniboxColor(OmniboxPart part,
-       // overlaid on it (see below) is hard to produce good contrast ratios
-       // against with colors other than white.
-       const SkColor dark_base_color =
--          high_contrast ? gfx::kGoogleGrey900 : gfx::kGoogleGrey800;
-+          high_contrast ? gfx::kGoogleGrey900 : gfx::macLocationBar;
-       const SkColor base_color = dark ? dark_base_color : SK_ColorWHITE;
-       // The spec calls for transparent black (or white) overlays for hover (8%)
-       // and select (6%), which can overlap (for 14%). Pre-blend these with the
+     case OmniboxPart::LOCATION_BAR_BACKGROUND:
+-      return state == OmniboxPartState::HOVERED
+-                 ? TP::COLOR_OMNIBOX_BACKGROUND_HOVERED
+-                 : TP::COLOR_OMNIBOX_BACKGROUND;
++      return TP::COLOR_OMNIBOX_BACKGROUND_HOVERED;
+     case OmniboxPart::LOCATION_BAR_SELECTED_KEYWORD:
+       return TP::COLOR_OMNIBOX_SELECTED_KEYWORD;
+     case OmniboxPart::RESULTS_BACKGROUND:
 --- a/chrome/browser/ui/omnibox/omnibox_theme.h
 +++ b/chrome/browser/ui/omnibox/omnibox_theme.h
-@@ -35,6 +35,7 @@
+@@ -33,6 +33,7 @@
    NORMAL,
    HOVERED,
    SELECTED,
 +  INACTIVE,
+ };
  
-   // Applicable to LOCATION_BAR_SECURITY_CHIP only.
-   CHIP_DEFAULT,
+ // Returns the color for the given |part| and |tint|. An optional |state| can be
 --- a/ui/gfx/color_palette.h
 +++ b/ui/gfx/color_palette.h
 @@ -149,6 +149,21 @@
@@ -105,13 +95,13 @@
  #endif  // UI_GFX_COLOR_PALETTE_H_
 --- a/ui/native_theme/common_theme.cc
 +++ b/ui/native_theme/common_theme.cc
-@@ -46,8 +46,7 @@
+@@ -51,8 +51,7 @@
        case NativeTheme::kColorId_WindowBackground:
        case NativeTheme::kColorId_DialogBackground:
        case NativeTheme::kColorId_BubbleBackground:
 -        return color_utils::AlphaBlend(SK_ColorWHITE, gfx::kGoogleGrey900,
 -                                       0.04f);
 +        return gfx::macMenuBackground;
+       case NativeTheme::kColorId_DialogForeground:
+         return gfx::kGoogleGrey500;
        case NativeTheme::kColorId_BubbleFooterBackground:
-         return SkColorSetRGB(0x32, 0x36, 0x39);
- 

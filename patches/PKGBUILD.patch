@@ -1,17 +1,24 @@
---- a/ungoogled-chromium-archlinux/PKGBUILD
-+++ b/ungoogled-chromium-archlinux/PKGBUILD
-@@ -76,6 +76,14 @@
-   _ungoogled_archlinux_repo="$srcdir/$pkgname-archlinux"
+--- PKGBUILD
++++ PKGBUILD
+@@ -77,6 +77,13 @@
    _ungoogled_repo="$srcdir/$pkgname"
    _utils="${_ungoogled_repo}/utils"
-+  
+ 
 +  cp -r ../patches/better-ui $_ungoogled_archlinux_repo/patches/
 +  cat <<EOT >> $_ungoogled_archlinux_repo/patches/series
 +better-ui/disable_animations.patch
 +better-ui/better_ui.patch
 +better-ui/mac_dark_mode.patch
-+better-ui/buildfix.patch
 +EOT
- 
++
    cd "$srcdir/chromium-${_chromium_version}"
-
+ 
+   msg2 'Pruning binaries'
+@@ -136,6 +143,7 @@
+   cp "$_ungoogled_repo/flags.gn" "out/Default/args.gn"
+   printf '\n' >> "out/Default/args.gn"
+   cat "$_ungoogled_archlinux_repo/flags.archlinux.gn" >> "out/Default/args.gn"
++  sed -i '/use_system_libopenjpeg2=true/d' "out/Default/args.gn"
+ 
+   # Facilitate deterministic builds (taken from build/config/compiler/BUILD.gn)
+   CFLAGS+='   -Wno-builtin-macro-redefined'
